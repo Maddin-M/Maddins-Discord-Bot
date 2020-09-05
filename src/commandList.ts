@@ -1,6 +1,5 @@
 import { prefix } from './config.json'
 import { Command } from './types'
-
 import help from './commands/help'
 import id from './commands/id'
 import leader from './commands/leader'
