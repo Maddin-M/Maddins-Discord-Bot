@@ -1,4 +1,4 @@
-# servant
+# voice tracker discord bot
 A Discord Voice Tracker Bot made with discord.js
 
 ### Setup
