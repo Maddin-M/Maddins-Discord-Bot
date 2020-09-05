@@ -1,11 +1,18 @@
+import { Client, Message } from 'discord.js'
 import { Request } from '../types'
-import { MessageEmbed } from 'discord.js'
+import postgres from '../postgres'
+import { defaultEmbed } from '../embed'
+import { getUser } from '../cache'
 
-const clean: Request = (_args: string[]) => {
+const clean: Request = async (_bot: Client, _msg: Message, _args: string[]) => {
 
-    // get leaderboard blablabla....
+    const res = await postgres.query('SELECT ID FROM USERS')
 
-    return new MessageEmbed()
+    for (const row of res.rows) {
+        if (!getUser(_bot, row.id)) await postgres.query('DELETE FROM USERS WHERE ID = $1', [row.id])
+    }
+
+    return defaultEmbed('Leaderboard gereinigt!')
 }
 
 export default clean
