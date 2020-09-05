@@ -1,10 +1,10 @@
 {
-  "name": "servant",
+  "name": "voice-tracker-discord-bot",
   "version": "1.0.0",
   "description": "",
   "main": "./dist/app.js",
   "scripts": {
-    "setup": "npm install -a && echo {\"token\": \"\", \"prefix\": \"!\"} > ./src/config/servant.json",
+    "setup": "npm install -a",
     "start": "tsc && node ./dist/app.js"
   },
   "keywords": [],
@@ -16,7 +16,9 @@
   },
   "dependencies": {
     "@types/node": "^14.0.26",
+    "@types/pg": "^7.14.4",
     "@types/ws": "^7.2.6",
-    "discord.js": "^12.2.0"
+    "discord.js": "^12.2.0",
+    "pg": "^8.0.2"
   }
 }

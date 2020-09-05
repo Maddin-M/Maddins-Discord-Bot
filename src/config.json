@@ -1,0 +1,17 @@
+{
+    "token": "", 
+    "prefix": "!",
+    "serverId": "",
+    "adminRole": "",
+    "announceChannel": "",
+    "ignoredChannels": [
+        "",
+        ""
+    ],
+    "rewardRoles": [
+        {
+            "roleId": "",
+            "seconds": 1
+        }
+    ]
+}

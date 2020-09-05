@@ -1,27 +1,38 @@
-
-import { token, prefix } from './config/servant.json' 
-import * as Discord from 'discord.js'
-import notFound from './commands/notFound'
+import { token, prefix, adminRole } from './config.json'
 import commandList from './commandList'
+import { Client } from 'discord.js'
+import voiceStateUpdate from './voiceStateUpdate'
+import { memberHasRole } from './cache'
 
-
-const bot = new Discord.Client()
+const bot = new Client()
 
 bot.login(token)
 
 bot.on('ready', () => {
-    console.log('Servant online!')
-})
-
-
-bot.on('message', (message) => {
-    if(!message.author.bot && !(message.channel.type === 'dm')) {
-        const args = message.content.split(' ')
-        const command = args.shift()
-        if(command?.startsWith(prefix)) {
-            const resolver = commandList.find(resolver => resolver.command === command.substr(1))
-            const response: string =  resolver?.handler(message, args) || notFound(message)
-            message.channel.send(response)
-        }
+    if(bot.user) {
+        console.log(`Logged in as ${bot.user.tag}!`)
+        bot.user.setActivity(`${prefix}help`)
     }
 })
+
+bot.on('message', async (msg) => {
+    if (msg.author.bot) return
+    if (msg.channel.type === 'dm') return
+    if (msg.content.indexOf(prefix) === 0) return
+
+    const args = msg.content.split(' ')
+    const command = args.shift()
+    if (!command) return
+
+    const resolver = commandList.find(resolver => resolver.cmd === command.substr(prefix.length) && (!resolver.adminOnly || memberHasRole(bot, msg.author.id, adminRole)))
+    if (!resolver) return
+
+    const result = await resolver.handler(bot, msg, args)
+    msg.channel.send(result)
+})
+
+bot.on('voiceStateUpdate', (oldState, newState) => {
+    if (oldState.member?.user.bot) return
+
+    voiceStateUpdate(bot, oldState, newState)
+});
