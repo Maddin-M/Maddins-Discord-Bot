@@ -35,4 +35,4 @@ bot.on('voiceStateUpdate', (oldState, newState) => {
     if (oldState.member?.user.bot) return
 
     voiceStateUpdate(bot, oldState, newState)
-});
+})
