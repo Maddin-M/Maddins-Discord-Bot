@@ -1,11 +1,14 @@
 {
   "name": "voice-tracker-discord-bot",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "./dist/app.js",
   "scripts": {
-    "setup": "npm install -a",
-    "start": "tsc && node ./dist/app.js"
+    "start": "node dist/app.js",
+    "postinstall": "tsc",
+    "watch-node": "nodemon dist/app.js",
+    "watch-ts": "tsc -w",
+    "deploy": "git add . && git commit -m Heroku && git push heroku master"
   },
   "keywords": [],
   "author": "",
@@ -20,5 +23,8 @@
     "@types/ws": "^7.2.6",
     "discord.js": "^12.2.0",
     "pg": "^8.0.2"
+  },
+  "engines": {
+    "node": "12.16.3"
   }
 }

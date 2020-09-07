@@ -16,9 +16,9 @@ const help: Request = async () => {
 }
 
 function formatUsage(array: Array<string>): string {
-    const result = ""
+    let result = ''
     for (const usage of array) {
-        result.concat(`\`${usage}\`  `)
+        result = result.concat(`\`${usage}\`  `)
     }
     return result;
 }

@@ -11,8 +11,8 @@ const leader: Request = async (_bot: Client, _msg: Message, _args: string[]) => 
     const embed = defaultEmbed(`Voice Channel Leaderboard  ${leaderEmoji}`)
     embed.setFooter(`"${prefix}leader [Zahl]" eingeben, um weitere Seiten zu sehen`)
 
-    isValidPage(_args) ? embed.setDescription(`Seite ${_args[1]}`) : embed.setDescription("Seite 1")
-    const offset = isValidPage(_args) ? (Number(_args[1]) - 1) * 5 : 0
+    isValidPage(_args) ? embed.setDescription(`Seite ${_args[0]}`) : embed.setDescription("Seite 1")
+    const offset = isValidPage(_args) ? (Number(_args[0]) - 1) * 5 : 0
 
     const res = await postgres.query('SELECT ID, TOTAL_ONLINE_SECONDS FROM USERS ORDER BY TOTAL_ONLINE_SECONDS DESC LIMIT 5 OFFSET $1', [offset])
 
@@ -26,7 +26,7 @@ const leader: Request = async (_bot: Client, _msg: Message, _args: string[]) => 
 }
 
 function isValidPage(args: string[]): boolean {
-    return args.length > 1 && !isNaN(Number(args[1])) && Number(args[1]) >= 1
+    return args.length > 0 && !isNaN(Number(args[0])) && Number(args[0]) >= 1
 }
 
 function getLeaderPrefix(place: number): string {
