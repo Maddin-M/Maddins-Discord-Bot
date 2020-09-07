@@ -7,6 +7,6 @@ const postgres = new Pool(
             rejectUnauthorized: false 
         }
     }
-);
+)
 
 export default postgres
