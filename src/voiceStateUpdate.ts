@@ -21,6 +21,8 @@ const voiceStateUpdate = async (_bot: Client, _oldState: VoiceState, _newState: 
 
     } else if (leftChannel(_oldState, _newState)) {
 
+        getTextChannel(_bot, '695601493058912307').send(`${getUser(_bot, '184932878541389824')} test`)
+
         const id = _oldState.id
         const res = await postgres.query('SELECT ID FROM USERS WHERE ID = $1', [id])
         if (res.rowCount === 0) return
