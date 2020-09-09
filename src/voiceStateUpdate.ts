@@ -10,20 +10,28 @@ const voiceStateUpdate = async (_bot: Client, _oldState: VoiceState, _newState: 
     if (enteredChannel(_oldState, _newState)) {
 
         const id = _oldState.id
+        const channel = getTextChannel(_bot, announceChannel)
+
         const res = await postgres.query('SELECT ID FROM USERS WHERE ID = $1', [id])
         if (res.rowCount === 0) {
             await postgres.query('INSERT INTO USERS(ID, TOTAL_ONLINE_SECONDS, LAST_JOINED) VALUES($1, 0, $2) ON CONFLICT DO NOTHING', [id, new Date()])
-            getTextChannel(_bot, announceChannel).send(`${getUsername(_bot, id)} ist das erste Mal in einen Voicechannel gegangen! ${happyEmoji}`)
 
+            if (channel) {
+                channel.send(`${getUsername(_bot, id)} ist das erste Mal in einen Voicechannel gegangen! ${happyEmoji}`)
+            } else {
+                console.error('VoiceStateUpdate (joinedChannel): failed to fetch text channel!')
+            }
         } else {
             await postgres.query('UPDATE USERS SET LAST_JOINED = $1 WHERE ID = $2', [new Date(), id])
         }
 
     } else if (leftChannel(_oldState, _newState)) {
 
-        getTextChannel(_bot, '695601493058912307').send(`${getUser(_bot, '184932878541389824')} test`)
-
         const id = _oldState.id
+        const user = getUser(_bot, id)
+        const member = getMember(_bot, id)
+        const channel = getTextChannel(_bot, announceChannel)
+
         const res = await postgres.query('SELECT ID FROM USERS WHERE ID = $1', [id])
         if (res.rowCount === 0) return
 
@@ -39,10 +47,25 @@ const voiceStateUpdate = async (_bot: Client, _oldState: VoiceState, _newState: 
         
         rewardRoles
             .sort((role1, role2) => role1.seconds - role2.seconds)
-            .forEach(role => {
-                if (oldSeconds < role.seconds && totalSeconds >= role.seconds) {
-                    getTextChannel(_bot, announceChannel).send(`${getUser(_bot, id)} ist mehr als ${toHoursNumber(role.seconds)} Stunden im Voice gewesen und hat die "${getRole(_bot, role.roleId).name}"-Rolle erhalten ${happyEmoji}`)
-                    getMember(_bot, id).roles.add(role.roleId)
+            .forEach(_role => {
+                if (oldSeconds < _role.seconds && totalSeconds >= _role.seconds) {
+                    if (!channel) {
+                        console.error('VoiceStateUpdate (leftChannel): failed to fetch text channel!') 
+                        return
+                    }
+
+                    const role = getRole(_bot, _role.roleId)
+                    if (!role) {
+                        console.error('VoiceStateUpdate (leftChannel): failed to fetch role!')
+                        return
+                    }
+                    
+                    if (user && member) {
+                        channel.send(`<@${user.id}> ist mehr als ${toHoursNumber(_role.seconds)} Stunden im Voice gewesen und hat die "${role.name}"-Rolle erhalten ${happyEmoji}`)
+                        member.roles.add(_role.roleId)
+                    } else {
+                        channel.send(`Gelöschter User (${id}) ist mehr als ${toHoursNumber(_role.seconds)} Stunden im Voice gewesen ${happyEmoji}`)
+                    }
                 }
             })
     }

@@ -12,31 +12,36 @@ export const getUsername = (bot: Client, id: string): string => {
     return user === undefined ? `Gelöschter User (${id})` : user.username
 }
 
-export const getTextChannel = (bot: Client, id: string): TextChannel => {
+export const getTextChannel = (bot: Client, id: string): TextChannel | undefined => {
     const channel = bot.channels.cache.get(id)
-    if (channel === undefined) throw 'Channel not found!'
-    if (channel.type !== 'text') throw 'Channel is not a text channel!'
+    if (channel === undefined || channel.type !== 'text') return undefined
     return channel as TextChannel
 }
 
-export const getGuild = (bot: Client): Guild => {
+export const getGuild = (bot: Client): Guild | undefined => {
     const guild = bot.guilds.cache.get(serverId)
-    if (guild === undefined) throw 'Server not found!'
+    if (guild === undefined) return undefined
     return guild
 }
 
-export const getMember = (bot: Client, id: string): GuildMember => {
-    const member = getGuild(bot).members.cache.get(id)
-    if (member === undefined) throw 'Member not found!'
+export const getMember = (bot: Client, id: string): GuildMember | undefined => {
+    const guild = getGuild(bot)
+    if (guild === undefined) return undefined
+    const member = guild.members.cache.get(id)
+    if (member === undefined) return undefined
     return member
 }
 
-export const getRole = (bot: Client, id: string): Role => {
-    const role = getGuild(bot).roles.cache.get(id)
-    if (role === undefined) throw 'Role not found!'
+export const getRole = (bot: Client, id: string): Role | undefined => {
+    const guild = getGuild(bot)
+    if (guild === undefined) return undefined
+    const role = guild.roles.cache.get(id)
+    if (role === undefined) return undefined
     return role
 }
 
 export const memberHasRole = (bot: Client, memberId: string, roleId: string): boolean => {
-    return getMember(bot, memberId).roles.cache.has(roleId)
+    const member = getMember(bot, memberId)
+    if (member === undefined) return false
+    return member.roles.cache.has(roleId)
 }

@@ -19,7 +19,7 @@ bot.on('message', async (msg) => {
     if (msg.author.bot) return
     if (msg.channel.type === 'dm') return
     if (msg.content.indexOf(prefix) !== 0) return
-
+    
     const args = msg.content.split(' ')
     const command = args.shift()
     if (!command) return
