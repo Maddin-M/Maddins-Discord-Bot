@@ -4,7 +4,7 @@ import { Request } from '../types'
 import postgres from '../postgres'
 import { defaultEmbed, leaderEmoji } from '../embed'
 import { formatSeconds } from '../timeUtil'
-import { getUsername } from '../cache'
+import { getUserV2 } from '../cache'
 
 const leader: Request = async (_bot: Client, _msg: Message, _args: string[]) => {
 
@@ -19,7 +19,15 @@ const leader: Request = async (_bot: Client, _msg: Message, _args: string[]) => 
     if (res.rowCount === 0) return 'Leaderboard ist leer oder Seite existiert nicht!'
 
     for (let i = 0; i < res.rowCount; i++) {
-        embed.addField(`${getLeaderPrefix(offset + i + 1)} ${getUsername(_bot, res.rows[i].id)}`, formatSeconds(res.rows[i].total_online_seconds))
+
+        let username = await getUserV2(_bot, res.rows[i].id)
+        .then((user) => {
+            return user.username
+        }).catch(() => {
+            return `Gelöschter User (${res.rows[i].id})`
+        })
+
+        embed.addField(`${getLeaderPrefix(offset + i + 1)} ${username}`, formatSeconds(res.rows[i].total_online_seconds))
     }
 
     return embed

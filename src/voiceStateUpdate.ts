@@ -1,7 +1,7 @@
 import { Client, VoiceState } from "discord.js";
 import { ignoredChannels, announceChannel, rewardRoles } from './config.json'
 import postgres from './postgres'
-import { getTextChannel, getUsername, getUser, getMember, getRole } from './cache'
+import { getTextChannel, getUserV2, getMember, getRole } from './cache'
 import { happyEmoji } from './embed'
 import { toHoursNumber } from './timeUtil'
 
@@ -17,7 +17,13 @@ const voiceStateUpdate = async (_bot: Client, _oldState: VoiceState, _newState: 
             await postgres.query('INSERT INTO USERS(ID, TOTAL_ONLINE_SECONDS, LAST_JOINED) VALUES($1, 0, $2) ON CONFLICT DO NOTHING', [id, new Date()])
 
             if (channel) {
-                channel.send(`${getUsername(_bot, id)} ist das erste Mal in einen Voicechannel gegangen! ${happyEmoji}`)
+                let username = await getUserV2(_bot, id)
+                .then((user) => {
+                    return user.username
+                }).catch(() => {
+                    return `User (${id})`
+                })
+                channel.send(`${username} ist das erste Mal in einen Voicechannel gegangen! ${happyEmoji}`)
             } else {
                 console.error('VoiceStateUpdate (joinedChannel): failed to fetch text channel!')
             }
@@ -28,7 +34,14 @@ const voiceStateUpdate = async (_bot: Client, _oldState: VoiceState, _newState: 
     } else if (leftChannel(_oldState, _newState)) {
 
         const id = _oldState.id
-        const user = getUser(_bot, id)
+
+        const user = await getUserV2(_bot, id)
+        .then((user) => {
+            return user
+        }).catch(() => {
+            return null
+        })
+        
         const member = getMember(_bot, id)
         const channel = getTextChannel(_bot, announceChannel)
 

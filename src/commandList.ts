@@ -7,6 +7,7 @@ import online from './commands/online'
 import sum from './commands/sum'
 import newdatabase from './commands/newDatabase'
 import clean from './commands/clean'
+import say from './commands/say'
 
 const commandList: Command[] = [
     {
@@ -54,6 +55,11 @@ const commandList: Command[] = [
     {
         cmd: 'clean',
         handler: clean,
+        adminOnly: true
+    },
+    {
+        cmd: 'say',
+        handler: say,
         adminOnly: true
     }
 ]
