@@ -1,12 +1,6 @@
 import { Client, Guild, GuildMember, TextChannel, User, Role } from 'discord.js'
 import { serverId } from './config.json'
 
-/*export const getUser = (bot: Client, id: string): User | undefined => {
-    const user = bot.users.cache.get(id)
-    if (user === undefined) return undefined
-    return user
-}*/
-
 export const getUserV2 = (bot: Client, id: string): Promise<User> => {
     return bot.users.fetch(id)
 }
