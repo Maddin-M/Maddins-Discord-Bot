@@ -7,8 +7,14 @@ export type Command = {
     cmd: string,
     handler: Request,
     adminOnly: boolean,
-    help?: {
+    help: {
         usage: string[]
         helpText: string,
     }
+}
+
+export type UserSeconds = {
+    oldSeconds: number,
+    newSeconds: number,
+    totalSeconds: number
 }

@@ -31,3 +31,7 @@ export const toHumanLifes = (seconds: number): string => {
 export const toHoursNumber = (seconds: number): number => {
     return seconds / 3600
 }
+
+export const toDateString = (date: Date): string => {
+    return `${date.getDate()}.${date.getMonth()+1}.${date.getFullYear()}`
+}

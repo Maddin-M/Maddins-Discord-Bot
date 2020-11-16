@@ -1,9 +1,9 @@
 import { Request } from '../types'
 import { Client, Message } from 'discord.js'
 import postgres from '../postgres'
-import { getUserV2 } from '../cache'
+import { getUserV2 } from '../util/discordUtil'
 import { defaultEmbed, sadEmoji, lookingEmoji } from '../embed'
-import { formatSeconds } from '../timeUtil'
+import { formatSeconds } from '../util/timeUtil'
 
 const online: Request = async (_bot: Client, _msg: Message, _args: string[]) => {
 
@@ -13,14 +13,16 @@ const online: Request = async (_bot: Client, _msg: Message, _args: string[]) => 
     const res = await postgres.query('SELECT * FROM (SELECT ROW_NUMBER() OVER (ORDER BY TOTAL_ONLINE_SECONDS DESC) PLACE, ' +
                                      'TOTAL_ONLINE_SECONDS, ID FROM USERS) U WHERE ID = $1', [id])
 
-    const username = await getUserV2(_bot, id)
-        .then((user) => {
-            return user.username
-        }).catch(() => {
-            return `Gelöschter User (${id})`
-        })
+    const user = await getUserV2(_bot, id)
+    let username
 
-    if (res.rowCount === 0) return `${username} war noch nie in einem Voice Channel! ${sadEmoji}`
+    if (user) {
+        username = user.username
+    } else {
+        username = `Gelöschter User (${id})`
+    }
+
+    if (res.rowCount === 0) return `${username} war noch nie in einem Voice Channel!  ${sadEmoji}`
     
     const seconds = res.rows[0].total_online_seconds
     const place = res.rows[0].place

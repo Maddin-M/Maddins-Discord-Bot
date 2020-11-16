@@ -11,6 +11,10 @@ export const leaderEmoji = random(["🏆", "🍻", "🏅", "🎖️", "🎯", "�
 export const helpEmoji = random(["😵", "🤯", "🥵", "🥱", "🤔", "🥴"])
 export const sumEmoji = random(["📈", "⏱️", "📏"])
 
-export const defaultEmbed = (title: string): MessageEmbed => new MessageEmbed()
-    .setTitle(title)
-    .setColor("#7289da")
+export const defaultEmbed = (title?: string): MessageEmbed => {
+    if (title) {
+        return new MessageEmbed().setTitle(title).setColor("#62d0f6")
+    } else {
+        return new MessageEmbed().setColor("#62d0f6")
+    }
+}

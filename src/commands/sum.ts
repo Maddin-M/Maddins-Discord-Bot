@@ -2,7 +2,7 @@ import { Client, Message } from 'discord.js'
 import { Request } from '../types'
 import { defaultEmbed, sumEmoji } from '../embed'
 import postgres from '../postgres'
-import { formatSeconds, toDays, toYears, toHumanLifes } from '../timeUtil'
+import { formatSeconds, toDays, toYears, toHumanLifes } from '../util/timeUtil'
 
 const sum: Request = async (_bot: Client, _msg: Message, _args: string[]) => {
 

@@ -1,16 +1,21 @@
 import { Request } from '../types'
+import { Client, Message } from 'discord.js'
 import commandList from '../commandList'
 import { defaultEmbed, helpEmoji } from '../embed'
 
-const help: Request = async () => {
+const help: Request = async (_bot: Client, _msg: Message, _args: string[]) => {
 
     const embed = defaultEmbed(`Help  ${helpEmoji}`)
 
-    commandList.forEach(command => {
-        if (command.help) {
+    if (_args[0] === 'admin') {
+        commandList.filter(cmd => cmd.adminOnly).forEach(command => {
             embed.addField(formatUsage(command.help.usage), command.help.helpText)
-        }
-    })
+        })
+    } else {
+        commandList.filter(cmd => !cmd.adminOnly).forEach(command => {
+            embed.addField(formatUsage(command.help.usage), command.help.helpText)
+        })
+    }
 
     return embed
 }
