@@ -1,12 +1,12 @@
 import { Client, Message } from 'discord.js'
 import { Request } from '../types'
 import { defaultEmbed } from '../embed'
-import { getUserV2 } from '../util/discordUtil'
+import { getUser } from '../util/discordUtil'
 
 const id: Request = async (_bot: Client, _msg: Message, _args: string[]) => {
 
     const embed = defaultEmbed('ID')
-    const user = await getUserV2(_bot, _args[0])
+    const user = await getUser(_bot, _args[0])
 
     if (user) {
         embed.setDescription(user.username)

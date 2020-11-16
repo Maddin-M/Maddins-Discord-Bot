@@ -1,10 +1,10 @@
 import { Client, Message } from 'discord.js'
 import { Request } from '../types'
 import { defaultEmbed, leaderEmoji } from '../embed'
-import postgres from '../postgres'
-import { getUserV2 } from '../util/discordUtil'
+import { getUser } from '../util/discordUtil'
 import { formatSeconds } from '../util/timeUtil'
 import { prefix } from '../config.json'
+import { countUsers, getLeaderboardPage } from '../util/sqlUtil'
 
 const leader: Request = async (_bot: Client, _msg: Message, _args: string[]) => {
 
@@ -12,28 +12,28 @@ const leader: Request = async (_bot: Client, _msg: Message, _args: string[]) => 
     embed.setFooter(`"${prefix}leader [Zahl]" eingeben, um weitere Seiten zu sehen`)
 
     const curentPage = isValidPage(_args) ? `Seite ${_args[0]}` : 'Seite 1'
-    const users = await postgres.query('SELECT COUNT(*) FROM USERS')
+    const users = await countUsers()
     const maxPages = Math.ceil(users.rows[0].count / 5)
     embed.setDescription(`${curentPage} / ${maxPages}`)
 
     const offset = isValidPage(_args) ? (Number(_args[0]) - 1) * 5 : 0
 
-    const res = await postgres.query('SELECT ID, TOTAL_ONLINE_SECONDS FROM USERS ORDER BY TOTAL_ONLINE_SECONDS DESC LIMIT 5 OFFSET $1', [offset])
+    const leaderboardPage = await getLeaderboardPage(offset)
 
-    if (res.rowCount === 0) return 'Leaderboard ist leer oder Seite existiert nicht!'
+    if (leaderboardPage.rowCount === 0) return 'Leaderboard ist leer oder Seite existiert nicht!'
 
-    for (let i = 0; i < res.rowCount; i++) {
+    for (let i = 0; i < leaderboardPage.rowCount; i++) {
 
-        const user = await getUserV2(_bot, res.rows[i].id)
+        const user = await getUser(_bot, leaderboardPage.rows[i].id)
         let username
 
         if (user) {
             username = user.username
         } else {
-            username = `Gelöschter User (${res.rows[i].id})`
+            username = `Gelöschter User (${leaderboardPage.rows[i].id})`
         }
 
-        embed.addField(`${getLeaderPrefix(offset + i + 1)} ${username}`, formatSeconds(res.rows[i].total_online_seconds))
+        embed.addField(`${getLeaderPrefix(offset + i + 1)} ${username}`, formatSeconds(leaderboardPage.rows[i].total_online_seconds))
     }
 
     return embed

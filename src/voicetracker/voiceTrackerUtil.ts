@@ -1,5 +1,5 @@
 import { VoiceState, TextChannel, Guild } from "discord.js";
-import { getMemberV2, getRoleV2 } from '../util/discordUtil'
+import { getMember, getRole } from '../util/discordUtil'
 import { rewardRoles, ignoredChannels } from '../config.json'
 import { addUser, updateLastJoined, updateOnlineSeconds, getUserTimeData, getUser, getOnlineRecord, insertIntoOnlineRecord, updateOnlineRecord } from '../util/sqlUtil'
 import { toHoursNumber, formatSeconds, toDateString } from '../util/timeUtil'
@@ -66,13 +66,13 @@ async function updateRecord(userId: string, userSeconds: UserSeconds, announceCh
 }
 
 async function updateRoles(userId: string, userSeconds: UserSeconds, announceChannel: TextChannel, guild: Guild): Promise<void> {
-    const member = await getMemberV2(guild, userId)
+    const member = await getMember(guild, userId)
     rewardRoles
         .sort((role1, role2) => role1.seconds - role2.seconds)
         .forEach(async _role => {
             if (userSeconds.oldSeconds < _role.seconds && userSeconds.totalSeconds >= _role.seconds) {
 
-                const role = await getRoleV2(guild, _role.roleId)
+                const role = await getRole(guild, _role.roleId)
                 if (role && member) {
                     announceChannel.send(`<@${userId}> ist insgesamt mehr als ${toHoursNumber(_role.seconds)} Stunden im Voice gewesen und hat die "${role.name}"-Rolle erhalten`)
                     member.roles.add(_role.roleId)

@@ -1,14 +1,14 @@
 import { Client, Message } from 'discord.js'
 import { Request } from '../types'
 import { defaultEmbed, sumEmoji } from '../embed'
-import postgres from '../postgres'
 import { formatSeconds, toDays, toYears, toHumanLifes } from '../util/timeUtil'
+import { getSum } from '../util/sqlUtil'
 
 const sum: Request = async (_bot: Client, _msg: Message, _args: string[]) => {
 
-    const res = await postgres.query('SELECT SUM(TOTAL_ONLINE_SECONDS) FROM USERS')
+    const sumResult = await getSum()
     
-    const sum = res.rows[0].sum
+    const sum = sumResult.rows[0].sum
     const embed = defaultEmbed(`Summe der im Voice verbrachten Zeit  ${sumEmoji}`)
 
     embed.setDescription(formatSeconds(sum))

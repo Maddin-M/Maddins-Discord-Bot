@@ -1,5 +1,5 @@
 import { Client, VoiceState } from "discord.js";
-import { getTextChannelV2, getGuildV2 } from '../util/discordUtil'
+import { getTextChannel, getGuild } from '../util/discordUtil'
 import { announceChannelId } from '../config.json'
 import { voiceTrackerOnline, enteredChannel, leftChannel, startTracking, endTracking } from './voiceTrackerUtil'
 
@@ -7,8 +7,8 @@ const voiceStateUpdate = async (_bot: Client, _oldState: VoiceState, _newState: 
 
     if (!voiceTrackerOnline) return
 
-    const announceChannel = await getTextChannelV2(_bot, announceChannelId)
-    const guild = await getGuildV2(_bot)
+    const announceChannel = await getTextChannel(_bot, announceChannelId)
+    const guild = await getGuild(_bot)
     const userId = _oldState.id
 
     if (enteredChannel(_oldState, _newState)) {

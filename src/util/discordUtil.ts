@@ -1,30 +1,30 @@
 import { Client, Guild, GuildMember, TextChannel, VoiceChannel, User, Role } from 'discord.js'
 import { serverId, ignoredChannels } from '../config.json'
 
-export const getUserV2 = (bot: Client, id: string): Promise<User> => {
+export const getUser = (bot: Client, id: string): Promise<User> => {
     return bot.users.fetch(id)
 }
 
-export const getTextChannelV2 = (bot: Client, id: string): Promise<TextChannel> => {
+export const getTextChannel = (bot: Client, id: string): Promise<TextChannel> => {
     const channel = bot.channels.fetch(id)
     return channel as Promise<TextChannel>
 }
 
-export const getGuildV2 = (bot: Client): Promise<Guild> => {
+export const getGuild = (bot: Client): Promise<Guild> => {
     return bot.guilds.fetch(serverId)
 }
 
-export const getMemberV2 = (guild: Guild, userId: string): Promise<GuildMember> => {
+export const getMember = (guild: Guild, userId: string): Promise<GuildMember> => {
     return guild.members.fetch(userId)
 }
 
-export const getRoleV2 = (guild: Guild, id: string): Promise<Role | null> => {
+export const getRole = (guild: Guild, id: string): Promise<Role | null> => {
     return guild.roles.fetch(id)
 }
 
-export const memberHasRoleV2 = async (bot: Client, memberId: string, roleId: string): Promise<boolean> => {
-    const guild = await getGuildV2(bot)
-    const member = await getMemberV2(guild, memberId)
+export const memberHasRole = async (bot: Client, memberId: string, roleId: string): Promise<boolean> => {
+    const guild = await getGuild(bot)
+    const member = await getMember(guild, memberId)
     return member.roles.cache.has(roleId)
 }
 

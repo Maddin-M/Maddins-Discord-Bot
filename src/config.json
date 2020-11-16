@@ -3,7 +3,7 @@
     "prefix": "!",
     "serverId": "",
     "adminRole": "",
-    "announceChannel": "",
+    "announceChannelId": "",
     "ignoredChannels": [
         "",
         ""

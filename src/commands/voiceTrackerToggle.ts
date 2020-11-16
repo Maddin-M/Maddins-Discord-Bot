@@ -3,7 +3,7 @@ import { Request } from '../types'
 import { defaultEmbed } from '../embed'
 import { announceChannelId } from '../config.json'
 import { enableVoiceTracker, disableVoiceTracker, voiceTrackerOnline, startTracking, endTracking } from '../voicetracker/voiceTrackerUtil'
-import { getAllMemberIdsInVoiceChannels, getGuildV2, getTextChannelV2 } from '../util/discordUtil'
+import { getAllMemberIdsInVoiceChannels, getGuild, getTextChannel } from '../util/discordUtil'
 
 const tracker: Request = async (_bot: Client, _msg: Message, _args: string[]) => {
 
@@ -14,8 +14,8 @@ const tracker: Request = async (_bot: Client, _msg: Message, _args: string[]) =>
         return embed
     }
 
-    const guild = await getGuildV2(_bot)
-    const announceChannel = await getTextChannelV2(_bot, announceChannelId)
+    const guild = await getGuild(_bot)
+    const announceChannel = await getTextChannel(_bot, announceChannelId)
 
     if (_args[0] === 'on') {
         if (voiceTrackerOnline === true) {
