@@ -1,5 +1,7 @@
-import { prefix } from './config.json'
+import { prefix } from './config/config.json'
+import { Message } from 'discord.js'
 import { Command } from './types'
+import { defaultEmbed } from './embed'
 import help from './commands/help'
 import id from './commands/id'
 import leader from './commands/leader'
@@ -11,7 +13,7 @@ import status from './commands/voiceTrackerStatus'
 import toggle from './commands/voiceTrackerToggle'
 import version from './commands/version'
 
-const commandList: Command[] = [
+export const commandList: Command[] = [
     {
         cmd: 'help', handler: help, adminOnly: false,
         help: { usage: [`${prefix}help`, `${prefix}help admin`], helpText: 'Wieso liest du dir das durch?' }
@@ -22,7 +24,7 @@ const commandList: Command[] = [
     },
     {
         cmd: 'leader', handler: leader, adminOnly: false,
-        help: { usage: [`${prefix}leader`, `${prefix}leader [Zahl]`],helpText: 'Zeigt eine Seite der Leute, die am meisten in VoiceChannels waren. Zahl für gewünschte Seite' }
+        help: { usage: [`${prefix}leader`, `${prefix}leader [Zahl]`], helpText: 'Zeigt eine Seite der Leute, die am meisten in VoiceChannels waren. Zahl für gewünschte Seite' }
     },
     {
         cmd: 'online', handler: online, adminOnly: false,
@@ -54,4 +56,8 @@ const commandList: Command[] = [
     }
 ]
 
-export default commandList
+export function commandNotFoundMessage(msg: Message): void {
+    const embed = defaultEmbed(`Command existiert nicht  🤨`)
+    embed.setDescription(`Schreibe \`${prefix}help\`, um eine Liste aller Befehle zu bekommen`)
+    msg.channel.send(embed)
+}

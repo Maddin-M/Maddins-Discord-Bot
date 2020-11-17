@@ -1,10 +1,9 @@
 import { VoiceState, TextChannel, Guild } from "discord.js";
 import { getMember, getRole } from '../util/discordUtil'
-import { rewardRoles, ignoredChannels } from '../config.json'
+import { rewardRoles, ignoredChannels } from '../config/config.json'
 import { addUser, updateLastJoined, updateOnlineSeconds, getUserTimeData, getUser, getOnlineRecord, insertIntoOnlineRecord, updateOnlineRecord } from '../util/sqlUtil'
 import { toHoursNumber, formatSeconds, toDateString } from '../util/timeUtil'
 import { UserSeconds } from '../types'
-import { leaderEmoji } from '../embed'
 
 // voice tracking is disabled after deploying, has to be activated by hand
 let voiceTrackerOnline = false
@@ -52,14 +51,14 @@ async function updateLeaderboard(userId: string): Promise<UserSeconds> {
 async function updateRecord(userId: string, userSeconds: UserSeconds, announceChannel: TextChannel): Promise<void> {
     const recordResult = await getOnlineRecord()
     if (recordResult.rowCount === 0) {
-        announceChannel.send(`**Neuer Rekord!**  ${leaderEmoji}  <@${userId}> hat einen neuen Online-Rekord aufgestellt! \`${formatSeconds(userSeconds.newSeconds)}\``)
+        announceChannel.send(`**Neuer Rekord!**  🏆  <@${userId}> hat einen neuen Online-Rekord aufgestellt! \`${formatSeconds(userSeconds.newSeconds)}\``)
         insertIntoOnlineRecord(userSeconds.newSeconds, userId)
 
     } else if (recordResult.rows[0].record_seconds < userSeconds.newSeconds) {
         const oldRecord = recordResult.rows[0].record_seconds
         const oldRecordUser = recordResult.rows[0].user_id
         const oldRecordDate = toDateString(recordResult.rows[0].record_date)
-        announceChannel.send(`**Neuer Rekord!**  ${leaderEmoji}  <@${userId}> hat einen neuen Online-Rekord aufgestellt! \`${formatSeconds(userSeconds.newSeconds)}\`
+        announceChannel.send(`**Neuer Rekord!**  🏆  <@${userId}> hat einen neuen Online-Rekord aufgestellt! \`${formatSeconds(userSeconds.newSeconds)}\`
 (Alter Rekord: \`${formatSeconds(oldRecord)}\` aufgestellt am \`${oldRecordDate}\` von <@${oldRecordUser}>)`)
         updateOnlineRecord(userSeconds.newSeconds, userId, oldRecordUser)
     }
@@ -74,7 +73,7 @@ async function updateRoles(userId: string, userSeconds: UserSeconds, announceCha
 
                 const role = await getRole(guild, _role.roleId)
                 if (role && member) {
-                    announceChannel.send(`<@${userId}> ist insgesamt mehr als ${toHoursNumber(_role.seconds)} Stunden im Voice gewesen und hat die "${role.name}"-Rolle erhalten`)
+                    announceChannel.send(`<@${userId}> ist insgesamt mehr als ${toHoursNumber(_role.seconds)} Stunden im Voice gewesen und hat die "${role.name}"-Rolle erhalten  🎉`)
                     member.roles.add(_role.roleId)
                 }
             }

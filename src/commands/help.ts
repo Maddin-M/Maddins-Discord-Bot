@@ -1,11 +1,11 @@
 import { Request } from '../types'
 import { Client, Message } from 'discord.js'
-import commandList from '../commandList'
-import { defaultEmbed, helpEmoji } from '../embed'
+import { commandList } from '../commandList'
+import { defaultEmbed } from '../embed'
 
 const help: Request = async (_bot: Client, _msg: Message, _args: string[]) => {
 
-    const embed = defaultEmbed(`Help  ${helpEmoji}`)
+    const embed = defaultEmbed(`Help  🤔`)
 
     if (_args[0] === 'admin') {
         commandList.filter(cmd => cmd.adminOnly).forEach(command => {

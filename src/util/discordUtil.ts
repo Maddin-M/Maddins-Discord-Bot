@@ -1,5 +1,5 @@
 import { Client, Guild, GuildMember, TextChannel, VoiceChannel, User, Role } from 'discord.js'
-import { serverId, ignoredChannels } from '../config.json'
+import { serverId, ignoredChannels } from '../config/config.json'
 
 export const getUser = (bot: Client, id: string): Promise<User> => {
     return bot.users.fetch(id)

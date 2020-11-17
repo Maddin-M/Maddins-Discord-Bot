@@ -35,3 +35,8 @@ export const toHoursNumber = (seconds: number): number => {
 export const toDateString = (date: Date): string => {
     return `${date.getDate()}.${date.getMonth()+1}.${date.getFullYear()}`
 }
+
+export const currentSeconds = (): number => {
+    const millis = new Date().getTime()
+    return ~~(millis / 1000)
+}

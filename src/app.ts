@@ -1,5 +1,5 @@
-import { token, prefix, adminRole } from './config.json'
-import commandList from './commandList'
+import { token, prefix, adminRole } from './config/config.json'
+import { commandList, commandNotFoundMessage } from './commandList'
 import { Client } from 'discord.js'
 import { memberHasRole } from './util/discordUtil'
 import voiceStateUpdate from './voicetracker/voiceTrackerLogic'
@@ -26,7 +26,10 @@ bot.on('message', async (msg) => {
 
     const hasAdminRole = await memberHasRole(bot, msg.author.id, adminRole)
     const resolver = commandList.find(resolver => resolver.cmd === command.substr(prefix.length) && (!resolver.adminOnly || hasAdminRole))
-    if (!resolver) return
+    if (!resolver) {
+        commandNotFoundMessage(msg)
+        return
+    }
 
     const result = await resolver.handler(bot, msg, args)
     msg.channel.send(result)
