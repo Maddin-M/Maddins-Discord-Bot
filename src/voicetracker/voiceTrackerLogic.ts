@@ -3,7 +3,7 @@ import { getTextChannel, getGuild } from '../util/discordUtil'
 import { announceChannelId } from '../config/config.json'
 import { voiceTrackerOnline, enteredChannel, leftChannel, startTracking, endTracking } from './voiceTrackerUtil'
 
-const voiceStateUpdate = async (_bot: Client, _oldState: VoiceState, _newState: VoiceState) => {
+export const voiceStateUpdate = async (_bot: Client, _oldState: VoiceState, _newState: VoiceState) => {
 
     if (!voiceTrackerOnline) return
 
@@ -18,5 +18,3 @@ const voiceStateUpdate = async (_bot: Client, _oldState: VoiceState, _newState: 
         await endTracking(userId, announceChannel, guild)
     }
 }
-
-export default voiceStateUpdate

@@ -1,9 +1,7 @@
 import { Client, Message } from 'discord.js'
 import { Request } from '../types'
 import { defaultEmbed } from '../embed'
-import { announceChannelId } from '../config/config.json'
-import { enableVoiceTracker, disableVoiceTracker, voiceTrackerOnline, startTracking, endTracking } from '../voicetracker/voiceTrackerUtil'
-import { getAllMemberIdsInVoiceChannels, getGuild, getTextChannel } from '../util/discordUtil'
+import { voiceTrackerOnline, startGlobalTracking, endGlobalTracking } from '../voicetracker/voiceTrackerUtil'
 
 const tracker: Request = async (_bot: Client, _msg: Message, _args: string[]) => {
 
@@ -15,19 +13,13 @@ const tracker: Request = async (_bot: Client, _msg: Message, _args: string[]) =>
         return embed
     }
 
-    const guild = await getGuild(_bot)
-    const announceChannel = await getTextChannel(_bot, announceChannelId)
-
     if (_args[0] === 'on') {
-        if (voiceTrackerOnline === true) {
+        if (voiceTrackerOnline) {
             embed.setTitle('Hinweis  ⚠️')
             embed.setDescription(`VoiceTracker ist bereits aktiviert!`)
             return embed
         } else {
-            enableVoiceTracker()
-            getAllMemberIdsInVoiceChannels(guild).forEach(memberId => {
-                startTracking(memberId, announceChannel)
-            })
+            await startGlobalTracking(_bot)
             embed.setTitle('Erfolg  ✅')
             embed.setDescription(`VoiceTracker wurde eingeschaltet!`)
             return embed
@@ -35,15 +27,12 @@ const tracker: Request = async (_bot: Client, _msg: Message, _args: string[]) =>
     }
 
     if (_args[0] === 'off') {
-        if (voiceTrackerOnline === false) {
+        if (!voiceTrackerOnline) {
             embed.setTitle('Hinweis  ⚠️')
             embed.setDescription(`VoiceTracker ist bereits deaktiviert!`)
             return embed
         } else {
-            disableVoiceTracker()
-            getAllMemberIdsInVoiceChannels(guild).forEach(memberId => {
-                endTracking(memberId, announceChannel, guild)
-            })
+            await endGlobalTracking(_bot)
             embed.setTitle('Erfolg  ✅')
             embed.setDescription(`VoiceTracker wurde ausgeschaltet!`)
             return embed

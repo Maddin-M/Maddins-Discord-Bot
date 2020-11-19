@@ -2,7 +2,7 @@ import { token, prefix, adminRole } from './config/config.json'
 import { commandList, commandNotFoundMessage } from './commandList'
 import { Client } from 'discord.js'
 import { memberHasRole } from './util/discordUtil'
-import voiceStateUpdate from './voicetracker/voiceTrackerLogic'
+import { voiceStateUpdate } from './voicetracker/voiceTrackerLogic'
 
 const bot = new Client()
 
@@ -35,8 +35,8 @@ bot.on('message', async (msg) => {
     msg.channel.send(result)
 })
 
-bot.on('voiceStateUpdate', (oldState, newState) => {
+bot.on('voiceStateUpdate', async (oldState, newState) => {
     if (oldState.member?.user.bot) return
 
-    voiceStateUpdate(bot, oldState, newState)
+    await voiceStateUpdate(bot, oldState, newState)
 })

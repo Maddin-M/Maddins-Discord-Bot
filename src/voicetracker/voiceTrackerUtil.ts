@@ -1,12 +1,11 @@
-import { VoiceState, TextChannel, Guild } from "discord.js";
-import { getMember, getRole } from '../util/discordUtil'
-import { rewardRoles, ignoredChannels } from '../config/config.json'
+import { VoiceState, TextChannel, Guild, Client } from "discord.js";
+import { getMember, getRole, getAllMemberIdsInVoiceChannels, getGuild, getTextChannel } from '../util/discordUtil'
+import { rewardRoles, ignoredChannels, announceChannelId } from '../config/config.json'
 import { addUser, updateLastJoined, updateOnlineSeconds, getUserTimeData, getUser, getOnlineRecord, insertIntoOnlineRecord, updateOnlineRecord } from '../util/sqlUtil'
 import { toHoursNumber, formatSeconds, toDateString } from '../util/timeUtil'
 import { UserSeconds } from '../types'
 
-// voice tracking is disabled after deploying, has to be activated by hand
-let voiceTrackerOnline = false
+let voiceTrackerOnline = true
 
 export async function startTracking(userId: string, announceChannel: TextChannel): Promise<void> {
 
@@ -32,6 +31,25 @@ export async function endTracking(userId: string, announceChannel: TextChannel, 
     await updateRoles(userId, userSeconds, announceChannel, guild)
 }
 
+export async function startGlobalTracking(_bot: Client): Promise<void> {
+    const guild = await getGuild(_bot)
+    const announceChannel = await getTextChannel(_bot, announceChannelId)
+
+    getAllMemberIdsInVoiceChannels(guild).forEach(memberId => {
+        startTracking(memberId, announceChannel)
+    })
+    voiceTrackerOnline = true
+}
+
+export async function endGlobalTracking(_bot: Client): Promise<void> {
+    const guild = await getGuild(_bot)
+    const announceChannel = await getTextChannel(_bot, announceChannelId)
+
+    getAllMemberIdsInVoiceChannels(guild).forEach(memberId => {
+        endTracking(memberId, announceChannel, guild)
+    })
+    voiceTrackerOnline = false
+}
 async function updateLeaderboard(userId: string): Promise<UserSeconds> {
     const userTimeDataResult = await getUserTimeData(userId)
     const currentTime = new Date()
@@ -78,14 +96,6 @@ async function updateRoles(userId: string, userSeconds: UserSeconds, announceCha
                 }
             }
         })
-}
-
-export function enableVoiceTracker() {
-    voiceTrackerOnline = true
-}
-
-export function disableVoiceTracker() {
-    voiceTrackerOnline = false
 }
 
 export function enteredChannel(oldState: VoiceState, newState: VoiceState): boolean {
