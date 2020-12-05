@@ -34,7 +34,7 @@ const createchannel: Request = async (_bot: Client, _msg: Message, _args: string
         type: 'voice',
         parent: customChannelCategoryId
     })
- 
+
     // channel nach 30 sekunden löschen, wenn leer
     setTimeout(function () {
         if (channel.members.size === 0) {

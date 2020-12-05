@@ -26,7 +26,7 @@ bot.on('message', async (msg) => {
     if (!command) return
 
     const hasAdminRole = await memberHasRole(bot, msg.author.id, adminRole)
-    const resolver = commandList.find(resolver => resolver.cmd === command.substr(prefix.length) && (!resolver.adminOnly || hasAdminRole))
+    const resolver = commandList.find(resolver => resolver.cmd.indexOf(command.substr(prefix.length)) > -1 && (!resolver.adminOnly || hasAdminRole))
     if (!resolver) {
         commandNotFoundMessage(msg)
         return
