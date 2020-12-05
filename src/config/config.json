@@ -4,6 +4,7 @@
     "serverId": "",
     "adminRole": "",
     "announceChannelId": "",
+    "customChannelCategoryId": "",
     "ignoredChannels": [
         "",
         ""

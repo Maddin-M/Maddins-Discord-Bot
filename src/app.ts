@@ -3,6 +3,7 @@ import { commandList, commandNotFoundMessage } from './commandList'
 import { Client } from 'discord.js'
 import { memberHasRole } from './util/discordUtil'
 import { voiceStateUpdate } from './voicetracker/voiceTrackerLogic'
+import { customChannelUpdate } from './customchannel/customChannelLogic'
 
 const bot = new Client()
 
@@ -36,7 +37,6 @@ bot.on('message', async (msg) => {
 })
 
 bot.on('voiceStateUpdate', async (oldState, newState) => {
-    if (oldState.member?.user.bot) return
-
     await voiceStateUpdate(bot, oldState, newState)
+    await customChannelUpdate(bot, oldState, newState)
 })

@@ -6,6 +6,7 @@ import { voiceTrackerOnline, enteredChannel, leftChannel, startTracking, endTrac
 export const voiceStateUpdate = async (_bot: Client, _oldState: VoiceState, _newState: VoiceState) => {
 
     if (!voiceTrackerOnline) return
+    if (_oldState.member?.user.bot) return
 
     const announceChannel = await getTextChannel(_bot, announceChannelId)
     const guild = await getGuild(_bot)

@@ -2,6 +2,7 @@ import { prefix } from './config/config.json'
 import { Message } from 'discord.js'
 import { Command } from './types'
 import { defaultEmbed } from './embed'
+import createchannel from './commands/createchannel'
 import help from './commands/help'
 import id from './commands/id'
 import leader from './commands/leader'
@@ -14,6 +15,10 @@ import toggle from './commands/voiceTrackerToggle'
 import version from './commands/version'
 
 export const commandList: Command[] = [
+    {
+        cmd: 'createchannel', handler: createchannel, adminOnly: false,
+        help: { usage: [`${prefix}createchannel [Name]`], helpText: 'Erstellt einen temporären VoiceChannel' }
+    },
     {
         cmd: 'help', handler: help, adminOnly: false,
         help: { usage: [`${prefix}help`, `${prefix}help admin`], helpText: 'Wieso liest du dir das durch?' }

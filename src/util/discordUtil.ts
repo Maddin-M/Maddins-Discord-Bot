@@ -1,4 +1,4 @@
-import { Client, Guild, GuildMember, TextChannel, VoiceChannel, User, Role } from 'discord.js'
+import { Client, Guild, GuildMember, TextChannel, VoiceChannel, CategoryChannel, User, Role } from 'discord.js'
 import { serverId, ignoredChannels } from '../config/config.json'
 
 export const getUser = (bot: Client, id: string): Promise<User> => {
@@ -8,6 +8,11 @@ export const getUser = (bot: Client, id: string): Promise<User> => {
 export const getTextChannel = (bot: Client, id: string): Promise<TextChannel> => {
     const channel = bot.channels.fetch(id)
     return channel as Promise<TextChannel>
+}
+
+export const getCategoryChannel = (bot: Client, id: string): Promise<CategoryChannel> => {
+    const channel = bot.channels.fetch(id)
+    return channel as Promise<CategoryChannel>
 }
 
 export const getGuild = (bot: Client): Promise<Guild> => {
