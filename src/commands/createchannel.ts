@@ -16,7 +16,7 @@ const createchannel: Request = async (_bot: Client, _msg: Message, _args: string
     const category = await getCategoryChannel(_bot, customChannelCategoryId)
     const customChannelLimit = 5
 
-    if (category.children.size >= customChannelLimit) {
+    if (category.children.filter(child => child.type === 'voice').size >= customChannelLimit) {
         embed.setDescription(`Das Limit von ${customChannelLimit} Custom Channels wurde erreicht, versuche es später nochmal!`)
         return embed
     }
