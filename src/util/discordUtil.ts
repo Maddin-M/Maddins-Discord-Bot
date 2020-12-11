@@ -1,5 +1,5 @@
-import { Client, Guild, GuildMember, TextChannel, VoiceChannel, CategoryChannel, User, Role } from 'discord.js'
-import { serverId, ignoredChannels } from '../config/config.json'
+import { Client, Guild, GuildMember, TextChannel, VoiceChannel, CategoryChannel, User, Role, VoiceState } from 'discord.js'
+import { serverId, ignoredChannelIds } from '../config/config.json'
 
 export const getUser = (bot: Client, id: string): Promise<User> => {
     return bot.users.fetch(id)
@@ -36,11 +36,21 @@ export const memberHasRole = async (bot: Client, memberId: string, roleId: strin
 export const getAllMemberIdsInVoiceChannels = (guild: Guild): string[] => {
     let memberIds: string[] = []
     const channels = guild.channels.cache
-        .filter(channel => !ignoredChannels.includes(channel.id) && channel.type === 'voice')
+        .filter(channel => !ignoredChannelIds.includes(channel.id) && channel.type === 'voice')
         .map(channel => channel as VoiceChannel)
 
     channels.forEach(channel => {
         memberIds = memberIds.concat(channel.members.map(member => member.id))
     })
     return memberIds
+}
+
+export function enteredChannel(oldState: VoiceState, newState: VoiceState): boolean {
+    return (oldState.channelID === null || oldState.channelID === undefined || ignoredChannelIds.includes(oldState.channelID)) && 
+            newState.channelID !== null && newState.channelID !== undefined && !ignoredChannelIds.includes(newState.channelID)
+}
+
+export function leftChannel(oldState: VoiceState, newState: VoiceState): boolean {
+    return (newState.channelID === null || newState.channelID === undefined || ignoredChannelIds.includes(newState.channelID)) && 
+            oldState.channelID !== null && oldState.channelID !== undefined && !ignoredChannelIds.includes(oldState.channelID)
 }

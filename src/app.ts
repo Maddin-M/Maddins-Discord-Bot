@@ -1,4 +1,4 @@
-import { token, prefix, adminRole } from './config/config.json'
+import { token, prefix, adminRoleId } from './config/config.json'
 import { commandList, commandNotFoundMessage } from './commandList'
 import { Client } from 'discord.js'
 import { memberHasRole } from './util/discordUtil'
@@ -25,7 +25,7 @@ bot.on('message', async (msg) => {
     const command = args.shift()
     if (!command) return
 
-    const hasAdminRole = await memberHasRole(bot, msg.author.id, adminRole)
+    const hasAdminRole = await memberHasRole(bot, msg.author.id, adminRoleId)
     const resolver = commandList.find(resolver => resolver.cmd.indexOf(command.substr(prefix.length)) > -1 && (!resolver.adminOnly || hasAdminRole))
     if (!resolver) {
         commandNotFoundMessage(msg)

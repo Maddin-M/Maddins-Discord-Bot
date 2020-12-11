@@ -1,7 +1,7 @@
 import { Client, VoiceState } from "discord.js";
-import { getTextChannel, getGuild } from '../util/discordUtil'
+import { getTextChannel, getGuild, enteredChannel, leftChannel } from '../util/discordUtil'
 import { announceChannelId } from '../config/config.json'
-import { voiceTrackerOnline, enteredChannel, leftChannel, startTracking, endTracking } from './voiceTrackerUtil'
+import { voiceTrackerOnline, startTracking, endTracking } from './voiceTrackerUtil'
 
 export const voiceStateUpdate = async (_bot: Client, _oldState: VoiceState, _newState: VoiceState) => {
 

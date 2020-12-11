@@ -2,10 +2,10 @@
     "token": "", 
     "prefix": "",
     "serverId": "",
-    "adminRole": "",
+    "adminRoleId": "",
     "announceChannelId": "",
     "customChannelCategoryId": "",
-    "ignoredChannels": [
+    "ignoredChannelIds": [
         "",
         ""
     ],

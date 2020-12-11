@@ -1,6 +1,6 @@
-import { VoiceState, TextChannel, Guild, Client } from "discord.js";
+import { TextChannel, Guild, Client } from "discord.js";
 import { getMember, getRole, getAllMemberIdsInVoiceChannels, getGuild, getTextChannel } from '../util/discordUtil'
-import { rewardRoles, ignoredChannels, announceChannelId } from '../config/config.json'
+import { rewardRoles, announceChannelId } from '../config/config.json'
 import { addUser, updateLastJoined, updateOnlineSeconds, getUserTimeData, getUser, getOnlineRecord, insertIntoOnlineRecord, updateOnlineRecord } from '../util/sqlUtil'
 import { toHoursNumber, formatSeconds, toDateString } from '../util/timeUtil'
 import { UserSeconds } from '../types'
@@ -50,6 +50,7 @@ export async function endGlobalTracking(_bot: Client): Promise<void> {
     })
     voiceTrackerOnline = false
 }
+
 async function updateLeaderboard(userId: string): Promise<UserSeconds> {
     const userTimeDataResult = await getUserTimeData(userId)
     const currentTime = new Date()
@@ -96,16 +97,6 @@ async function updateRoles(userId: string, userSeconds: UserSeconds, announceCha
                 }
             }
         })
-}
-
-export function enteredChannel(oldState: VoiceState, newState: VoiceState): boolean {
-    return (oldState.channelID === null || oldState.channelID === undefined || ignoredChannels.includes(oldState.channelID)) && 
-            newState.channelID !== null && newState.channelID !== undefined && !ignoredChannels.includes(newState.channelID)
-}
-
-export function leftChannel(oldState: VoiceState, newState: VoiceState): boolean {
-    return (newState.channelID === null || newState.channelID === undefined || ignoredChannels.includes(newState.channelID)) && 
-            oldState.channelID !== null && oldState.channelID !== undefined && !ignoredChannels.includes(oldState.channelID)
 }
 
 export { voiceTrackerOnline }
