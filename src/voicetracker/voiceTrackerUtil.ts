@@ -41,7 +41,7 @@ export async function startGlobalTracking(_bot: Client): Promise<void> {
     voiceTrackerOnline = true
 }
 
-export async function endGlobalTracking(_bot: Client): Promise<void> {
+export async function stopGlobalTracking(_bot: Client): Promise<void> {
     const guild = await getGuild(_bot)
     const announceChannel = await getTextChannel(_bot, announceChannelId)
 

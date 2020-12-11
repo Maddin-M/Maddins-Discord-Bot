@@ -10,8 +10,8 @@ import online from './commands/online'
 import record from './commands/record'
 import say from './commands/say'
 import sum from './commands/sum'
-import status from './commands/voiceTrackerStatus'
-import toggle from './commands/voiceTrackerToggle'
+import status from './commands/status'
+import toggle from './commands/tracker'
 import version from './commands/version'
 
 export const commandList: Command[] = [
@@ -44,12 +44,12 @@ export const commandList: Command[] = [
         help: { usage: [`${prefix}say [Message]`], helpText: 'Lässt den Bot lebendig werden' }
     },
     {
-        cmd: ['sum'], handler: sum, adminOnly: false,
-        help: { usage: [`${prefix}sum`], helpText: 'Zeigt die Summe der auf dem Server verbrachten Zeit im Voice' }
-    },
-    {
         cmd: ['status'], handler: status, adminOnly: false,
         help: { usage: [`${prefix}status`], helpText: 'Zeigt an, ob der VoiceTracker gerade aktiv ist' }
+    },
+    {
+        cmd: ['sum'], handler: sum, adminOnly: false,
+        help: { usage: [`${prefix}sum`], helpText: 'Zeigt die Summe der auf dem Server verbrachten Zeit im Voice' }
     },
     {
         cmd: ['tracker'], handler: toggle, adminOnly: true,
