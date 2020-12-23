@@ -22,7 +22,7 @@ bot.on('message', async (msg) => {
     if (msg.content.indexOf(prefix) !== 0) return
     
     const args = msg.content.split(' ')
-    const command = args.shift()
+    const command = args.shift()?.toLowerCase()
     if (!command) return
 
     const hasAdminRole = await memberHasRole(bot, msg.author.id, adminRoleId)
