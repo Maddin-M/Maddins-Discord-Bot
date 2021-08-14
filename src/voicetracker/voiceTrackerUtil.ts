@@ -1,4 +1,4 @@
-import { TextChannel, Guild, Client } from "discord.js";
+import { TextChannel, Guild, Client } from "discord.js"
 import { getMember, getRole, getAllMemberIdsInVoiceChannels, getGuild, getTextChannel } from '../util/discordUtil'
 import { rewardRoles, announceChannelId } from '../config/config.json'
 import { addUser, updateLastJoined, updateOnlineSeconds, getUserTimeData, getUser, getOnlineRecord, insertIntoOnlineRecord, updateOnlineRecord } from '../util/sqlUtil'

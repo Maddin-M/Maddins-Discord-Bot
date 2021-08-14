@@ -51,7 +51,7 @@ module.exports = {
             if (channel.members.size === 0) {
                 channel.delete()
             }
-        }, 30_000);
+        }, 30_000)
 
         embed.setDescription(`Channel '${channelName}' erstellt!`)
 		await interaction.reply({ embeds: [embed] })

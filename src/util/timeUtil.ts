@@ -1,15 +1,15 @@
 export const formatSeconds = (seconds: number): string => {
-    if (seconds === 0) return "0 Sekunden";
+    if (seconds === 0) return "0 Sekunden"
 
-    var h = ~~(seconds / 3600);
-    var m = ~~(seconds % 3600 / 60);
-    var s = ~~(seconds % 60);
+    var h = ~~(seconds / 3600)
+    var m = ~~(seconds % 3600 / 60)
+    var s = ~~(seconds % 60)
 
-    var hDisplay = h > 0 ? h + (h == 1 ? " Stunde, " : " Stunden, ") : "";
-    var mDisplay = m > 0 ? m + (m == 1 ? " Minute, " : " Minuten, ") : "";
-    var sDisplay = s > 0 ? s + (s == 1 ? " Sekunde" : " Sekunden") : "";
+    var hDisplay = h > 0 ? h + (h == 1 ? " Stunde, " : " Stunden, ") : ""
+    var mDisplay = m > 0 ? m + (m == 1 ? " Minute, " : " Minuten, ") : ""
+    var sDisplay = s > 0 ? s + (s == 1 ? " Sekunde" : " Sekunden") : ""
 
-    return hDisplay + mDisplay + sDisplay;
+    return hDisplay + mDisplay + sDisplay
 }
 
 const format = (time: number): string => {

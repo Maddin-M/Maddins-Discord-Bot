@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders')
-const appVersion = require('project-version');
+const appVersion = require('project-version')
 import { CommandInteraction } from 'discord.js'
 import { defaultEmbed } from '../embed'
 

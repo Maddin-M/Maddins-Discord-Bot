@@ -1,5 +1,5 @@
 import { ApplicationCommand } from 'discord.js'
-import { token, serverId, clientId /*prefix, adminRoleId*/ } from '../config/config.json'
+import { token, clientId } from '../config/config.json'
 const { REST } = require('@discordjs/rest')
 const { Routes } = require('discord-api-types/v9')
 
@@ -11,9 +11,7 @@ export function updateSlashCommands(slashCommandJSONs: ApplicationCommand[]) {
             console.log('Started refreshing application (/) commands.')
     
             await rest.put(
-                Routes.applicationGuildCommands(clientId, serverId),
-                // für echten bot den command nutzen 
-                // Routes.applicationCommands(clientId),
+                Routes.applicationCommands(clientId),
                 { body: slashCommandJSONs },
             )
     

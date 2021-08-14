@@ -1,4 +1,4 @@
-import { Client, VoiceState } from "discord.js";
+import { Client, VoiceState } from "discord.js"
 import { getTextChannel, getGuild, enteredChannel, leftChannel } from '../util/discordUtil'
 import { announceChannelId } from '../config/config.json'
 import { voiceTrackerOnline, startTracking, endTracking } from './voiceTrackerUtil'
