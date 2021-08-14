@@ -3,12 +3,13 @@ import { CommandInteraction } from 'discord.js'
 import { defaultEmbed } from '../embed'
 import { formatSeconds } from '../util/timeUtil'
 import { getUserOnline } from '../util/sqlUtil'
+import { SlashCommandUserOption } from '@discordjs/builders'
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('online')
 		.setDescription('Zeigt an, wie lange du oder der von dir angegebene User in Voice Channels online waren')
-        .addUserOption(option =>
+        .addUserOption((option: SlashCommandUserOption) =>
             option
                 .setName('user')
                 .setDescription('User, der geprüft werden soll')),

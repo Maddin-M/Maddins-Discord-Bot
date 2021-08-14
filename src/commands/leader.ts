@@ -5,12 +5,13 @@ import { getUser } from '../util/discordUtil'
 import { formatSeconds } from '../util/timeUtil'
 import { countUsers, getLeaderboardPage } from '../util/sqlUtil'
 import bot from '../app'
+import { SlashCommandIntegerOption } from '@discordjs/builders'
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('leader')
 		.setDescription('Zeigt eine Seite der Leute, die am meisten in VoiceChannels waren. Zahl für gewünschte Seite')
-        .addIntegerOption(option =>
+        .addIntegerOption((option: SlashCommandIntegerOption) =>
             option
                 .setName('page')
                 .setDescription('Seite, die angezeigt werden soll')),

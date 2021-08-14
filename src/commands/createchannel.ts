@@ -4,12 +4,13 @@ import { defaultEmbed } from '../embed'
 import { customChannelCategoryId, everyoneRoleId } from '../config/config.json'
 import bot from '../app'
 import { getCategoryChannel, getGuild } from '../util/discordUtil'
+import { SlashCommandStringOption } from '@discordjs/builders'
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('createchannel')
 		.setDescription('Erstellt einen temporären VoiceChannel')
-        .addStringOption(option =>
+        .addStringOption((option: SlashCommandStringOption) =>
             option
                 .setName('name')
                 .setDescription('Name des Channels')

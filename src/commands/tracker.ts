@@ -5,12 +5,13 @@ import { voiceTrackerOnline, startGlobalTracking, stopGlobalTracking } from '../
 import { adminRoleId } from '../config/config.json'
 import bot from '../app'
 import { memberHasRole } from '../util/discordUtil'
+import { SlashCommandStringOption } from '@discordjs/builders'
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('tracker')
 		.setDescription('Schaltet den VoiceTracker ein und aus')
-        .addStringOption(option =>
+        .addStringOption((option: SlashCommandStringOption) =>
             option
                 .setName('newtrackerstatus')
                 .setDescription('Wähle aus, ob der Tracker an-, ausgeschaltet oder aktualisiert werden soll')
