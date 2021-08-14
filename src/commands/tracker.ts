@@ -1,61 +1,75 @@
-import { Client, Message } from 'discord.js'
-import { Request } from '../types'
+const { SlashCommandBuilder } = require('@discordjs/builders')
+import { CommandInteraction } from 'discord.js'
 import { defaultEmbed } from '../embed'
 import { voiceTrackerOnline, startGlobalTracking, stopGlobalTracking } from '../voicetracker/voiceTrackerUtil'
+import { adminRoleId } from '../config/config.json'
+import bot from '../app'
+import { memberHasRole } from '../util/discordUtil'
 
-const tracker: Request = async (_bot: Client, _msg: Message, _args: string[]) => {
+module.exports = {
+	data: new SlashCommandBuilder()
+		.setName('tracker')
+		.setDescription('Schaltet den VoiceTracker ein und aus')
+        .addStringOption(option =>
+            option
+                .setName('newtrackerstatus')
+                .setDescription('Wähle aus, ob der Tracker an-, ausgeschaltet oder aktualisiert werden soll')
+                .setRequired(true)
+                .addChoice('on', 'on')
+                .addChoice('off', 'off')
+                .addChoice('update', 'update')),
+        
+	async execute(interaction: CommandInteraction) {
 
-    const embed = defaultEmbed()
-
-    if (_args.length === 0) {
-        embed.setTitle('Hinweis  ⚠️')
-        embed.setDescription(`Parameter \`on\`, \`off\` oder \`update\` fehlen!`)
-        return embed
-    }
-
-    if (_args[0] === 'on') {
-        if (voiceTrackerOnline) {
-            embed.setTitle('Hinweis  ⚠️')
-            embed.setDescription(`VoiceTracker ist bereits aktiviert!`)
-            return embed
-        } else {
-            await startGlobalTracking(_bot)
-            embed.setTitle('Erfolg  ✅')
-            embed.setDescription(`VoiceTracker wurde eingeschaltet!`)
-            return embed
+        const hasAdminRole = await memberHasRole(bot, interaction.user.id, adminRoleId)
+        if (!hasAdminRole) {
+            await interaction.reply({ embeds: [defaultEmbed('Dieser Command ist nur für Admins nutzbar!  🚨')], ephemeral: true })
+            return
         }
-    }
 
-    if (_args[0] === 'off') {
-        if (voiceTrackerOnline) {
-            await stopGlobalTracking(_bot)
-            embed.setTitle('Erfolg  ✅')
-            embed.setDescription(`VoiceTracker wurde ausgeschaltet!`)
-            return embed
-        } else {
-            embed.setTitle('Hinweis  ⚠️')
-            embed.setDescription(`VoiceTracker ist bereits deaktiviert!`)
-            return embed
+        const newTrackerStatus = interaction.options.getString('newtrackerstatus')
+        const embed = defaultEmbed()
+
+        if (newTrackerStatus === 'on') {
+            if (voiceTrackerOnline) {
+                embed.setTitle('Hinweis  ⚠️')
+                embed.setDescription(`VoiceTracker ist bereits aktiviert!`)
+                await interaction.reply({ embeds: [embed], ephemeral: true })
+            } else {
+                await startGlobalTracking(bot)
+                embed.setTitle('Erfolg  ✅')
+                embed.setDescription(`VoiceTracker wurde eingeschaltet!`)
+                await interaction.reply({ embeds: [embed] })
+            }
+            return
         }
-    }
 
-    if (_args[0] === 'update') {
-        if (voiceTrackerOnline) {
-            await stopGlobalTracking(_bot)
-            await startGlobalTracking(_bot)
-            embed.setTitle('Erfolg  ✅')
-            embed.setDescription(`VoiceTracker wurde aktualisiert!`)
-            return embed
-        } else {
-            embed.setTitle('Hinweis  ⚠️')
-            embed.setDescription(`VoiceTracker ist deaktiviert, kann nur eingeschalteten VoiceTracker aktualisieren!`)
-            return embed
+        if (newTrackerStatus === 'off') {
+            if (voiceTrackerOnline) {
+                await stopGlobalTracking(bot)
+                embed.setTitle('Erfolg  ✅')
+                embed.setDescription(`VoiceTracker wurde ausgeschaltet!`)
+                await interaction.reply({ embeds: [embed] })
+            } else {
+                embed.setTitle('Hinweis  ⚠️')
+                embed.setDescription(`VoiceTracker ist bereits deaktiviert!`)
+                await interaction.reply({ embeds: [embed], ephemeral: true })
+            }
+            return
         }
-    }
 
-    embed.setTitle('Hinweis  ⚠️')
-    embed.setDescription(`Nur die Parameter \`on\`, \`off\` oder \`update\` sind gültig!`)
-    return embed
+        if (newTrackerStatus === 'update') {
+            if (voiceTrackerOnline) {
+                await stopGlobalTracking(bot)
+                await startGlobalTracking(bot)
+                embed.setTitle('Erfolg  ✅')
+                embed.setDescription(`VoiceTracker wurde aktualisiert!`)
+                await interaction.reply({ embeds: [embed] })
+            } else {
+                embed.setTitle('Hinweis  ⚠️')
+                embed.setDescription(`VoiceTracker ist deaktiviert, kann nur eingeschalteten VoiceTracker aktualisieren!`)
+                await interaction.reply({ embeds: [embed], ephemeral: true })
+            }
+        }
+	},
 }
-
-export default tracker

@@ -1,8 +1,9 @@
 {
     "token": "", 
-    "prefix": "",
+    "clientId": "",
     "serverId": "",
     "adminRoleId": "",
+    "everyoneRoleId": "",
     "announceChannelId": "",
     "customChannelCategoryId": "",
     "ignoredChannelIds": [

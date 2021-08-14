@@ -36,7 +36,7 @@ export const memberHasRole = async (bot: Client, memberId: string, roleId: strin
 export const getAllMemberIdsInVoiceChannels = (guild: Guild): string[] => {
     let memberIds: string[] = []
     const channels = guild.channels.cache
-        .filter(channel => !ignoredChannelIds.includes(channel.id) && channel.type === 'voice')
+        .filter(channel => !ignoredChannelIds.includes(channel.id) && channel.type === "GUILD_VOICE")
         .map(channel => channel as VoiceChannel)
 
     channels.forEach(channel => {
@@ -46,11 +46,11 @@ export const getAllMemberIdsInVoiceChannels = (guild: Guild): string[] => {
 }
 
 export function enteredChannel(oldState: VoiceState, newState: VoiceState): boolean {
-    return (oldState.channelID === null || oldState.channelID === undefined || ignoredChannelIds.includes(oldState.channelID)) && 
-            newState.channelID !== null && newState.channelID !== undefined && !ignoredChannelIds.includes(newState.channelID)
+    return (oldState.channelId === null || oldState.channelId === undefined || ignoredChannelIds.includes(oldState.channelId)) && 
+            newState.channelId !== null && newState.channelId !== undefined && !ignoredChannelIds.includes(newState.channelId)
 }
 
 export function leftChannel(oldState: VoiceState, newState: VoiceState): boolean {
-    return (newState.channelID === null || newState.channelID === undefined || ignoredChannelIds.includes(newState.channelID)) && 
-            oldState.channelID !== null && oldState.channelID !== undefined && !ignoredChannelIds.includes(oldState.channelID)
+    return (newState.channelId === null || newState.channelId === undefined || ignoredChannelIds.includes(newState.channelId)) && 
+            oldState.channelId !== null && oldState.channelId !== undefined && !ignoredChannelIds.includes(oldState.channelId)
 }

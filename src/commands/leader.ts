@@ -1,39 +1,48 @@
-import { Client, Message } from 'discord.js'
-import { Request } from '../types'
+const { SlashCommandBuilder } = require('@discordjs/builders')
+import { CommandInteraction } from 'discord.js'
 import { defaultEmbed } from '../embed'
 import { getUser } from '../util/discordUtil'
 import { formatSeconds } from '../util/timeUtil'
-import { prefix } from '../config/config.json'
 import { countUsers, getLeaderboardPage } from '../util/sqlUtil'
+import bot from '../app'
 
-const leader: Request = async (_bot: Client, _msg: Message, _args: string[]) => {
+module.exports = {
+	data: new SlashCommandBuilder()
+		.setName('leader')
+		.setDescription('Zeigt eine Seite der Leute, die am meisten in VoiceChannels waren. Zahl für gewünschte Seite')
+        .addIntegerOption(option =>
+            option
+                .setName('page')
+                .setDescription('Seite, die angezeigt werden soll')),
+        
+	async execute(interaction: CommandInteraction) {
 
-    const embed = defaultEmbed(`Voice Channel Leaderboard  🏆`)
-    embed.setFooter(`"${prefix}leader [Zahl]" eingeben, um weitere Seiten zu sehen`)
+        const enteredPage = interaction.options.getInteger('page')
+        const embed = defaultEmbed(`Voice Channel Leaderboard  🏆`)
+        embed.setFooter(`"/leader [Zahl]" eingeben, um weitere Seiten zu sehen`)
 
-    const curentPage = isValidPage(_args) ? `Seite ${_args[0]}` : 'Seite 1'
-    const users = await countUsers()
-    const maxPages = Math.ceil(users.rows[0].count / 5)
-    embed.setDescription(`${curentPage} / ${maxPages}`)
+        const users = await countUsers()
+        const maxPages = Math.ceil(users.rows[0].count / 5)
+        embed.setDescription(`${enteredPage != null && enteredPage > 0 ? enteredPage : 1} / ${maxPages}`)
 
-    const offset = isValidPage(_args) ? (Number(_args[0]) - 1) * 5 : 0
-    const leaderboardPage = await getLeaderboardPage(offset)
+        const offset = enteredPage != null && enteredPage >= 1 ? (enteredPage - 1) * 5 : 0
+        const leaderboardPage = await getLeaderboardPage(offset)
 
-    if (leaderboardPage.rowCount === 0) return 'Leaderboard ist leer oder Seite existiert nicht!  😭'
+        if (leaderboardPage.rowCount === 0) {
+            await interaction.reply({ embeds: [defaultEmbed(`Leaderboard ist leer oder Seite "${enteredPage}" existiert nicht!  😭`)] })
+            return
+        }
 
-    for (let i = 0; i < leaderboardPage.rowCount; i++) {
+        for (let i = 0; i < leaderboardPage.rowCount; i++) {
 
-        const user = await getUser(_bot, leaderboardPage.rows[i].id)
-        const username = user ? user.username : `Gelöschter User (${leaderboardPage.rows[i].id})`
+            const user = await getUser(bot, leaderboardPage.rows[i].id)
+            const username = user ? user.username : `Gelöschter User (${leaderboardPage.rows[i].id})`
+    
+            embed.addField(`${getLeaderPrefix(offset + i + 1)} ${username}`, formatSeconds(leaderboardPage.rows[i].total_online_seconds))
+        }
 
-        embed.addField(`${getLeaderPrefix(offset + i + 1)} ${username}`, formatSeconds(leaderboardPage.rows[i].total_online_seconds))
-    }
-
-    return embed
-}
-
-function isValidPage(args: string[]): boolean {
-    return args.length > 0 && !isNaN(Number(args[0])) && Number(args[0]) >= 1
+		await interaction.reply({ embeds: [embed] })
+	},
 }
 
 function getLeaderPrefix(place: number): string {
@@ -44,5 +53,3 @@ function getLeaderPrefix(place: number): string {
         default: return `\`${place}.\``
     }
 }
-
-export default leader

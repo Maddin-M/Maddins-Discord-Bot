@@ -1,20 +1,23 @@
-import { Client, Message } from 'discord.js'
-import { Request } from '../types'
+const { SlashCommandBuilder } = require('@discordjs/builders')
+import { CommandInteraction } from 'discord.js'
 import { defaultEmbed } from '../embed'
 import { voiceTrackerOnline } from '../voicetracker/voiceTrackerUtil'
 
-const status: Request = async (_bot: Client, _msg: Message, _args: string[]) => {
+module.exports = {
+	data: new SlashCommandBuilder()
+		.setName('status')
+		.setDescription('Zeigt an, ob der VoiceTracker gerade aktiv ist'),
+        
+	async execute(interaction: CommandInteraction) {
 
-    const embed = defaultEmbed('VoiceTracker Status  ⚙️')
+        const embed = defaultEmbed('VoiceTracker Status  ⚙️')
 
-    if (voiceTrackerOnline) {
-        embed.setDescription('VoiceTracker ist eingeschaltet  ✅')
+        if (voiceTrackerOnline) {
+            embed.setDescription('VoiceTracker ist eingeschaltet  ✅')
+        } else {
+            embed.setDescription('VoiceTracker ist ausgeschaltet  ❌')
+        }
 
-    } else {
-        embed.setDescription('VoiceTracker ist ausgeschaltet  ❌')
-    }
-
-    return embed
+		await interaction.reply({ embeds: [embed] })
+	},
 }
-
-export default status

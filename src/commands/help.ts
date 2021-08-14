@@ -1,31 +1,23 @@
-import { Request } from '../types'
-import { Client, Message } from 'discord.js'
-import { commandList } from '../commandList'
+const { SlashCommandBuilder } = require('@discordjs/builders')
+import { CommandInteraction } from 'discord.js'
 import { defaultEmbed } from '../embed'
+import bot from '../app'
+import { clientId, serverId } from '../config/config.json'
 
-const help: Request = async (_bot: Client, _msg: Message, _args: string[]) => {
+module.exports = {
+	data: new SlashCommandBuilder()
+		.setName('help')
+		.setDescription('Zeigt eine List aller Commands'),
+        
+	async execute(interaction: CommandInteraction) {
 
-    const embed = defaultEmbed(`Help  🤔`)
+        const embed = defaultEmbed(`Help  🤔`)
 
-    if (_args[0] === 'admin') {
-        commandList.filter(cmd => cmd.adminOnly).forEach(command => {
-            embed.addField(formatUsage(command.help.usage), command.help.helpText)
-        })
-    } else {
-        commandList.filter(cmd => !cmd.adminOnly).forEach(command => {
-            embed.addField(formatUsage(command.help.usage), command.help.helpText)
-        })
-    }
+        const commands = await bot.api.applications(clientId).guilds(serverId).commands.get()
+        for (const command of commands) {
+            embed.addField(`\`/${command.name}\``, command.description)
+        }
 
-    return embed
+	    await interaction.reply({ embeds: [embed] })
+	},
 }
-
-function formatUsage(array: Array<string>): string {
-    let result = ''
-    for (const usage of array) {
-        result = result.concat(`\`${usage}\`  `)
-    }
-    return result;
-}
-
-export default help

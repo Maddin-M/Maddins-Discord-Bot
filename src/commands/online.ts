@@ -1,29 +1,38 @@
-import { Request } from '../types'
-import { Client, Message } from 'discord.js'
-import { getUser } from '../util/discordUtil'
+const { SlashCommandBuilder } = require('@discordjs/builders')
+import { CommandInteraction } from 'discord.js'
 import { defaultEmbed } from '../embed'
 import { formatSeconds } from '../util/timeUtil'
 import { getUserOnline } from '../util/sqlUtil'
 
-const online: Request = async (_bot: Client, _msg: Message, _args: string[]) => {
+module.exports = {
+	data: new SlashCommandBuilder()
+		.setName('online')
+		.setDescription('Zeigt an, wie lange du oder der von dir angegebene User in Voice Channels online waren')
+        .addUserOption(option =>
+            option
+                .setName('user')
+                .setDescription('User, der geprüft werden soll')),
+        
+	async execute(interaction: CommandInteraction) {
 
-    const mention = _msg.mentions.users.first(1)
-    const userId = mention.length !== 0 && mention[0].bot === false ? mention[0].id : _msg.author.id
+        var user = interaction.options.getUser('user')
+        if (user == null) {
+            user = interaction.user
+        }
+        const onlineResult = await getUserOnline(user.id)
+        const username = user ? user.username : `Gelöschter User`
 
-    const onlineResult = await getUserOnline(userId)
+        if (onlineResult.rowCount === 0) {
+            await interaction.reply({ embeds: [defaultEmbed(`${username} war noch nie in einem Voice Channel!  😭`)] })
+            return
+        }
+        
+        const seconds = onlineResult.rows[0].total_online_seconds
+        const place = onlineResult.rows[0].place
 
-    const user = await getUser(_bot, userId)
-    const username = user ? user.username : `Gelöschter User (${userId})`
+        const embed = defaultEmbed(`Zeit, die ${username} im Voice verbracht hat  🤓`)
+        embed.addField(formatSeconds(seconds), `Damit ist ${username} auf dem \`${place}.\` Platz im Leaderboard!`)
 
-    if (onlineResult.rowCount === 0) return `${username} war noch nie in einem Voice Channel!  😭`
-    
-    const seconds = onlineResult.rows[0].total_online_seconds
-    const place = onlineResult.rows[0].place
-
-    const embed = defaultEmbed(`Zeit, die ${username} im Voice verbracht hat  🤓`)
-    embed.addField(formatSeconds(seconds), `Damit ist ${username} auf dem \`${place}.\` Platz im Leaderboard!`)
-
-    return embed
+		await interaction.reply({ embeds: [embed] })
+	},
 }
-
-export default online
