@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders')
 import { CommandInteraction } from 'discord.js'
 import { defaultEmbed } from '../embed'
 import bot from '../app'
-import { clientId, serverId } from '../config/config.json'
+import { clientId } from '../config/config.json'
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -13,7 +13,7 @@ module.exports = {
 
         const embed = defaultEmbed(`Help  🤔`)
 
-        const commands = await bot.api.applications(clientId).guilds(serverId).commands.get()
+        const commands = await bot.api.applications(clientId).commands.get()
         for (const command of commands) {
             embed.addField(`\`/${command.name}\``, command.description)
         }

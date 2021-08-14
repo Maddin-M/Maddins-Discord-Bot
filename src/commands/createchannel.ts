@@ -19,7 +19,7 @@ module.exports = {
 	async execute(interaction: CommandInteraction) {
 
         const channelName = interaction.options.getString('name')!!
-        const embed = defaultEmbed('ID')
+        const embed = defaultEmbed('Custom Channel  💬')
 
         const category = await getCategoryChannel(bot, customChannelCategoryId)
         const customChannelLimit = 5
