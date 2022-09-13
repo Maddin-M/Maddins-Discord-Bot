@@ -1,5 +1,5 @@
 import { ApplicationCommand } from 'discord.js'
-import { token, clientId } from '../config/config.json'
+import { token, clientId } from '../util/envUtil'
 const { REST } = require('@discordjs/rest')
 const { Routes } = require('discord-api-types/v9')
 

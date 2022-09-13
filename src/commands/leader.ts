@@ -1,26 +1,26 @@
 const { SlashCommandBuilder } = require('@discordjs/builders')
-import { CommandInteraction } from 'discord.js'
+import { ChatInputCommandInteraction } from 'discord.js'
 import { defaultEmbed } from '../embed'
 import { getUser } from '../util/discordUtil'
 import { formatSeconds } from '../util/timeUtil'
 import { countUsers, getLeaderboardPage } from '../util/sqlUtil'
 import bot from '../app'
-import { SlashCommandIntegerOption } from '@discordjs/builders'
+import { SlashCommandOptionsOnlyBuilder } from '@discordjs/builders'
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('leader')
 		.setDescription('Zeigt eine Seite der Leute, die am meisten in VoiceChannels waren. Zahl für gewünschte Seite')
-        .addIntegerOption((option: SlashCommandIntegerOption) =>
+        .addIntegerOption((option: SlashCommandOptionsOnlyBuilder) =>
             option
                 .setName('page')
                 .setDescription('Seite, die angezeigt werden soll')),
         
-	async execute(interaction: CommandInteraction) {
+	async execute(interaction: ChatInputCommandInteraction) {
 
         const enteredPage = interaction.options.getInteger('page')
         const embed = defaultEmbed(`Voice Channel Leaderboard  🏆`)
-        embed.setFooter(`"/leader [Zahl]" eingeben, um weitere Seiten zu sehen`)
+        embed.setFooter({ text: `"/leader [Zahl]" eingeben, um weitere Seiten zu sehen` })
 
         const users = await countUsers()
         const maxPages = Math.ceil(users.rows[0].count / 5)
@@ -39,7 +39,7 @@ module.exports = {
             const user = await getUser(bot, leaderboardPage.rows[i].id)
             const username = user ? user.username : `Gelöschter User (${leaderboardPage.rows[i].id})`
     
-            embed.addField(`${getLeaderPrefix(offset + i + 1)} ${username}`, formatSeconds(leaderboardPage.rows[i].total_online_seconds))
+            embed.addFields({ name: `${getLeaderPrefix(offset + i + 1)} ${username}`, value: formatSeconds(leaderboardPage.rows[i].total_online_seconds) })
         }
 
 		await interaction.reply({ embeds: [embed] })

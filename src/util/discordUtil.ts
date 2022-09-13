@@ -1,5 +1,5 @@
-import { Client, Guild, GuildMember, TextChannel, VoiceChannel, CategoryChannel, User, Role, VoiceState } from 'discord.js'
-import { serverId, ignoredChannelIds } from '../config/config.json'
+import { Client, Guild, GuildMember, TextChannel, VoiceChannel, CategoryChannel, User, Role, VoiceState, ChannelType } from 'discord.js'
+import { serverId, ignoredChannelIds } from '../util/envUtil'
 
 export const getUser = (bot: Client, id: string): Promise<User> => {
     return bot.users.fetch(id)
@@ -36,7 +36,7 @@ export const memberHasRole = async (bot: Client, memberId: string, roleId: strin
 export const getAllMemberIdsInVoiceChannels = (guild: Guild): string[] => {
     let memberIds: string[] = []
     const channels = guild.channels.cache
-        .filter(channel => !ignoredChannelIds.includes(channel.id) && channel.type === "GUILD_VOICE")
+        .filter(channel => !ignoredChannelIds.includes(channel.id) && channel.type === ChannelType.GuildVoice)
         .map(channel => channel as VoiceChannel)
 
     channels.forEach(channel => {

@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  discord-bot:
+    container_name: discord-bot
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env.test
+    networks:
+     - postgres
+
+networks:
+  postgres:
+    external:
+      name: postgres-network

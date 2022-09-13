@@ -1,9 +1,9 @@
 import { TextChannel, Guild, Client } from "discord.js"
 import { getMember, getRole, getAllMemberIdsInVoiceChannels, getGuild, getTextChannel } from '../util/discordUtil'
-import { rewardRoles, announceChannelId } from '../config/config.json'
 import { addUser, updateLastJoined, updateOnlineSeconds, getUserTimeData, getUser, getOnlineRecord, insertIntoOnlineRecord, updateOnlineRecord } from '../util/sqlUtil'
 import { toHoursNumber, formatSeconds, toDateString } from '../util/timeUtil'
 import { UserSeconds } from '../types'
+import { rewardRoles, announceChannelId } from '../util/envUtil'
 
 let voiceTrackerOnline = true
 
@@ -63,7 +63,7 @@ async function updateLeaderboard(userId: string): Promise<UserSeconds> {
     return {
         oldSeconds: oldSeconds,
         newSeconds: newSeconds,
-        totalSeconds: totalSeconds
+        totalSeconds: totalSeconds,
     }
 }
 
@@ -89,7 +89,6 @@ async function updateRoles(userId: string, userSeconds: UserSeconds, announceCha
         .sort((role1, role2) => role1.seconds - role2.seconds)
         .forEach(async _role => {
             if (userSeconds.oldSeconds < _role.seconds && userSeconds.totalSeconds >= _role.seconds) {
-
                 const role = await getRole(guild, _role.roleId)
                 if (role && member) {
                     announceChannel.send(`<@${userId}> ist insgesamt mehr als ${toHoursNumber(_role.seconds)} Stunden im Voice gewesen und hat die "${role.name}"-Rolle erhalten  🎉`)

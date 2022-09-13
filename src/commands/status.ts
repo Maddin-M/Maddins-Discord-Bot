@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders')
-import { CommandInteraction } from 'discord.js'
+import { ChatInputCommandInteraction } from 'discord.js'
 import { defaultEmbed } from '../embed'
 import { voiceTrackerOnline } from '../voicetracker/voiceTrackerUtil'
 
@@ -8,7 +8,7 @@ module.exports = {
 		.setName('status')
 		.setDescription('Zeigt an, ob der VoiceTracker gerade aktiv ist'),
         
-	async execute(interaction: CommandInteraction) {
+	async execute(interaction: ChatInputCommandInteraction) {
 
         const embed = defaultEmbed('VoiceTracker Status  ⚙️')
 

@@ -1,8 +1,8 @@
 const { SlashCommandBuilder } = require('@discordjs/builders')
-import { CommandInteraction } from 'discord.js'
+import { ChatInputCommandInteraction } from 'discord.js'
 import { defaultEmbed } from '../embed'
 import { voiceTrackerOnline, startGlobalTracking, stopGlobalTracking } from '../voicetracker/voiceTrackerUtil'
-import { adminRoleId } from '../config/config.json'
+import { adminRoleId } from '../util/envUtil'
 import bot from '../app'
 import { memberHasRole } from '../util/discordUtil'
 import { SlashCommandStringOption } from '@discordjs/builders'
@@ -16,11 +16,13 @@ module.exports = {
                 .setName('newtrackerstatus')
                 .setDescription('Wähle aus, ob der Tracker an-, ausgeschaltet oder aktualisiert werden soll')
                 .setRequired(true)
-                .addChoice('on', 'on')
-                .addChoice('off', 'off')
-                .addChoice('update', 'update')),
+                .addChoices(
+                    { name: 'on', value: 'on' },
+                    { name: 'off', value: 'off' },
+                    { name: 'update', value: 'update' },
+                )),
         
-	async execute(interaction: CommandInteraction) {
+	async execute(interaction: ChatInputCommandInteraction) {
 
         const hasAdminRole = await memberHasRole(bot, interaction.user.id, adminRoleId)
         if (!hasAdminRole) {
