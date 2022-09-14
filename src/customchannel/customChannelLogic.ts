@@ -1,5 +1,5 @@
 import { VoiceState } from 'discord.js'
-import { customChannelCategoryId } from '../config/config.json'
+import { customChannelCategoryId } from '../util/envUtil'
 
 export const customChannelUpdate = async (_oldState: VoiceState, _newState: VoiceState) => {
 

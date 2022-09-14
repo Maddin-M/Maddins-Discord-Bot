@@ -1,9 +1,9 @@
-import { MessageEmbed } from "discord.js"
+import { EmbedBuilder } from "discord.js"
 
-export const defaultEmbed = (title?: string): MessageEmbed => {
+export const defaultEmbed = (title?: string): EmbedBuilder => {
     if (title) {
-        return new MessageEmbed().setTitle(title).setColor("#62d0f6")
+        return new EmbedBuilder().setTitle(title).setColor("#62d0f6")
     } else {
-        return new MessageEmbed().setColor("#62d0f6")
+        return new EmbedBuilder().setColor("#62d0f6")
     }
 }

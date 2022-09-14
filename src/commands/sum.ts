@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders')
-import { CommandInteraction } from 'discord.js'
+import { ChatInputCommandInteraction } from 'discord.js'
 import { defaultEmbed } from '../embed'
 import { formatSeconds, toDays, toYears, toHumanLifes } from '../util/timeUtil'
 import { getSum } from '../util/sqlUtil'
@@ -9,7 +9,7 @@ module.exports = {
 		.setName('sum')
 		.setDescription('Zeigt die Summe der auf dem Server verbrachten Zeit im Voice'),
         
-	async execute(interaction: CommandInteraction) {
+	async execute(interaction: ChatInputCommandInteraction) {
 
         const sumResult = await getSum()
     
@@ -17,9 +17,11 @@ module.exports = {
         const embed = defaultEmbed(`Summe der im Voice verbrachten Zeit  🗓️`)
 
         embed.setDescription(formatSeconds(sum))
-        embed.addField('In `Tagen` sind das:', `${toDays(sum)} Tage`)
-        embed.addField('In `Jahren` sind das:', `${toYears(sum)} Jahre`)
-        embed.addField('In `Durchschnittlicher Lebenszeit eines Menschen` sind das:', `${toHumanLifes(sum)} Menschenleben`)
+        embed.addFields(
+            { name: 'In `Tagen` sind das:', value: `${toDays(sum)} Tage` },
+            { name: 'In `Jahren` sind das:', value: `${toYears(sum)} Jahre` },
+            { name: 'In `Durchschnittlicher Lebenszeit eines Menschen` sind das:', value: `${toHumanLifes(sum)} Menschenleben` },
+        )
 
 		await interaction.reply({ embeds: [embed] })
 	},

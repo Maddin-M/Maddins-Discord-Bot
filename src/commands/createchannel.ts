@@ -1,10 +1,11 @@
 const { SlashCommandBuilder } = require('@discordjs/builders')
-import { CommandInteraction } from 'discord.js'
+import { ChatInputCommandInteraction } from 'discord.js'
 import { defaultEmbed } from '../embed'
-import { customChannelCategoryId, everyoneRoleId } from '../config/config.json'
+import { customChannelCategoryId, everyoneRoleId } from '../util/envUtil'
 import bot from '../app'
 import { getCategoryChannel, getGuild } from '../util/discordUtil'
 import { SlashCommandStringOption } from '@discordjs/builders'
+import { ChannelType, PermissionFlagsBits } from 'discord-api-types/v10'
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -16,7 +17,7 @@ module.exports = {
                 .setDescription('Name des Channels')
                 .setRequired(true)),
         
-	async execute(interaction: CommandInteraction) {
+	async execute(interaction: ChatInputCommandInteraction) {
 
         const channelName = interaction.options.getString('name')!!
         const embed = defaultEmbed('Custom Channel  💬')
@@ -24,7 +25,7 @@ module.exports = {
         const category = await getCategoryChannel(bot, customChannelCategoryId)
         const customChannelLimit = 5
 
-        if (category.children.filter(child => child.type === "GUILD_VOICE").size >= customChannelLimit) {
+        if (category.children.cache.filter(child => child.type === ChannelType.GuildVoice).size >= customChannelLimit) {
             embed.setDescription(`Das Limit von ${customChannelLimit} Custom Channels wurde erreicht, versuche es später nochmal!`)
             await interaction.reply({ embeds: [embed], ephemeral: true })
             return
@@ -38,12 +39,13 @@ module.exports = {
 
         const guild = await getGuild(bot)
     
-        const channel = await guild.channels.create(channelName, {
-            type: "GUILD_VOICE",
+        const channel = await guild.channels.create({
+            name: channelName,
+            type: ChannelType.GuildVoice,
             parent: customChannelCategoryId,
             permissionOverwrites: [{
                 id: everyoneRoleId,
-                allow: ['CONNECT']
+                allow: [PermissionFlagsBits.Connect]
             }]
         })
 

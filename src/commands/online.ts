@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders')
-import { CommandInteraction } from 'discord.js'
+import { ChatInputCommandInteraction } from 'discord.js'
 import { defaultEmbed } from '../embed'
 import { formatSeconds } from '../util/timeUtil'
 import { getUserOnline } from '../util/sqlUtil'
@@ -14,7 +14,7 @@ module.exports = {
                 .setName('user')
                 .setDescription('User, der geprüft werden soll')),
         
-	async execute(interaction: CommandInteraction) {
+	async execute(interaction: ChatInputCommandInteraction) {
 
         var user = interaction.options.getUser('user')
         if (user == null) {
@@ -32,7 +32,7 @@ module.exports = {
         const place = onlineResult.rows[0].place
 
         const embed = defaultEmbed(`Zeit, die ${username} im Voice verbracht hat  🤓`)
-        embed.addField(formatSeconds(seconds), `Damit ist ${username} auf dem \`${place}.\` Platz im Leaderboard!`)
+        embed.addFields({ name: formatSeconds(seconds), value: `Damit ist ${username} auf dem \`${place}.\` Platz im Leaderboard!`})
 
 		await interaction.reply({ embeds: [embed] })
 	},
