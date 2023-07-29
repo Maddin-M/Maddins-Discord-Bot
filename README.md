@@ -15,6 +15,7 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+      
 # add the below part only, if postgres is started from a different docker-compose.yml (https://stackoverflow.com/a/38089080/13045488)
     networks:
      - postgres
@@ -23,4 +24,14 @@ networks:
   postgres:
     external:
       name: postgres-network
+```
+
+# Maintainance
+
+check for updates in package.json:
+```
+npm i -g npm-check-updates
+ncu -u
+npm install
+>>>>>>> Stashed changes
 ```

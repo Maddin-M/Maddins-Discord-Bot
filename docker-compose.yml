@@ -2,15 +2,22 @@ version: "3"
 
 services:
   discord-bot:
-    container_name: discord-bot
+    container_name: vtdb-app
     build: .
     restart: unless-stopped
     env_file:
-      - .env.test
-    networks:
-     - postgres
+      - .env
 
-networks:
   postgres:
-    external:
-      name: postgres-network
+    container_name: vtdb-postgres
+    image: postgres:15.2-alpine
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: "voice-tracker-discord-bot"
+      POSTGRES_PASSWORD: "voice-tracker-discord-bot"
+      POSTGRES_DB: "voice-tracker-discord-bot"
+      PGDATA: "/var/lib/postgresql/data/"
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    restart: unless-stopped

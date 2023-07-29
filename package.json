@@ -1,6 +1,6 @@
 {
   "name": "maddins-discord-bot",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "",
   "main": "./dist/app.js",
   "engines": {
@@ -13,16 +13,16 @@
   },
   "author": "Maddin",
   "dependencies": {
-    "@discordjs/builders": "^1.2.0",
-    "@discordjs/rest": "^1.1.0",
-    "@discordjs/voice": "^0.11.0",
-    "@types/node": "^18.7.17",
-    "@types/pg": "^8.6.5",
-    "@types/ws": "^8.5.3",
-    "discord-api-types": "^0.37.9",
-    "discord.js": "^14.3.0",
-    "pg": "^8.8.0",
+    "@discordjs/builders": "^1.6.3",
+    "@discordjs/rest": "^1.7.1",
+    "@discordjs/voice": "^0.16.0",
+    "@types/node": "^20.4.5",
+    "@types/pg": "^8.10.2",
+    "@types/ws": "^8.5.5",
+    "discord-api-types": "^0.37.50",
+    "discord.js": "^14.11.0",
+    "pg": "^8.11.1",
     "project-version": "^2.0.0",
-    "typescript": "^4.8.3"
+    "typescript": "^5.1.6"
   }
 }
